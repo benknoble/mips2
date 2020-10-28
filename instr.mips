@@ -1,0 +1,112 @@
+.eqv opcode_mask 0xfc000000
+.eqv opcode_shift 26
+.eqv rs_mask 0x03e00000
+.eqv rs_shift 21
+.eqv rt_mask 0x001f0000
+.eqv rt_shift 16
+.eqv rd_mask 0x0000f800
+.eqv rd_shift 11
+.eqv shamt_mask 0x000007c0
+.eqv shamt_shift 6
+.eqv funct_mask 0x0000003f
+.eqv funct_shift 0
+.eqv imm_mask 0x0000ffff
+.eqv imm_shift 16
+.eqv addr_mask 0x03ffffff
+.eqv addr_shift 0
+
+# vim
+# command! -nargs=1 Extract put =[ '.macro <args> (%instr, %reg)', '    andi %reg %instr <args>_mask', '    srl %reg %reg <args>_shift', '.end_macro', '' ]
+# for n in ['opcode', 'rs', 'rt', 'rd', 'shamt', 'funct', 'imm', 'addr']
+#   execute 'Extract' n
+# endfor
+
+.macro opcode (%instr, %reg) # %reg
+    andi %reg %instr opcode_mask
+    srl %reg %reg opcode_shift
+.end_macro
+
+.macro rs (%instr, %reg) # %reg
+    andi %reg %instr rs_mask
+    srl %reg %reg rs_shift
+.end_macro
+
+.macro rt (%instr, %reg) # %reg
+    andi %reg %instr rt_mask
+    srl %reg %reg rt_shift
+.end_macro
+
+.macro rd (%instr, %reg) # %reg
+    andi %reg %instr rd_mask
+    srl %reg %reg rd_shift
+.end_macro
+
+.macro shamt (%instr, %reg) # %reg
+    andi %reg %instr shamt_mask
+    srl %reg %reg shamt_shift
+.end_macro
+
+.macro funct (%instr, %reg) # %reg
+    andi %reg %instr funct_mask
+    srl %reg %reg funct_shift
+.end_macro
+
+# hand-edited
+.macro zero_ext_imm (%instr, %reg) # %reg
+    andi %reg %instr imm_mask
+    # no shift; already in place
+.end_macro
+
+.macro sign_ext_imm (%instr, %reg) # %reg
+    andi %reg %instr imm_mask
+    # put sign into left-most bit
+    sll %reg %reg imm_shift
+    # re-scale, preserve sign
+    sra %reg %reg imm_shift
+.end_macro
+# hand-edited
+
+.macro addr (%instr, %reg) # %reg
+    andi %reg %instr addr_mask
+    srl %reg %reg addr_shift
+    # word align
+    sll %reg %reg 2
+.end_macro
+
+# These are non-R-type. OPCODES defined here:
+.eqv OP_LW 0x23
+.eqv OP_SW 0x2b
+
+.eqv OP_ADDI 0x08
+# NOTE: addiu *does* sign-extend the imm
+.eqv OP_ADDIU 0x09
+.eqv OP_SLTI 0x0a
+.eqv OP_SLTIU 0x0b
+.eqv OP_ORI 0x0d
+.eqv OP_LUI 0x0f
+.eqv OP_ANDI 0x0c
+.eqv OP_XORI 0x0e
+
+.eqv OP_BEQ 0x04
+.eqv OP_BNE 0x05
+.eqv OP_J 0x02
+.eqv OP_JAL 0x03
+
+# These are all R-type, i.e., OPCODE=0. FUNC field defined here:
+.eqv FUNC_ADD 0x20
+.eqv FUNC_ADDU 0x21
+.eqv FUNC_SUB 0x22
+.eqv FUNC_AND 0x24
+.eqv FUNC_OR 0x25
+.eqv FUNC_XOR 0x26
+.eqv FUNC_NOR 0x27
+.eqv FUNC_SLT 0x2a
+.eqv FUNC_SLTU 0x2b
+.eqv FUNC_SLL 0x00
+.eqv FUNC_SLLV 0x04
+.eqv FUNC_SRL 0x02
+.eqv FUNC_SRLV 0x06
+.eqv FUNC_SRA 0x03
+.eqv FUNC_SRAV 0x07
+.eqv FUNC_JR 0x08
+.eqv FUNC_JALR 0x09

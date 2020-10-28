@@ -1,0 +1,146 @@
+# requires prog.mips
+# requires instr.mips
+
+# macros for pc
+.data
+pc: .word 0
+
+.macro l_pc (%reg) # %reg
+    lw %reg pc
+.end_macro
+
+.macro s_pc (%reg)
+    sw %reg pc
+.end_macro
+
+.macro l_instr (%reg) # %reg
+    l_pc %reg
+    # %reg = Mem[Mem[pc]]; assume pc word-aligned
+    lw %reg 0(%reg)
+.end_macro
+
+# macros to load/store registers, data
+# - for all data-based addresses (sw, lw), we subtract DATA_START and address
+#   relative to data
+# - for all text-based address (bt, jt, j addr), we subtract TEXT_START and
+#   address relative to the start of program-memory (which varies!)
+# - whenever rs/rd/rt == 29, forward to actual $sp (automatic b/c l_reg, s_reg)
+#   - for consistency, the above will also write to (but not read from) rf[29]
+# - whenever sw/lw involves 29, forward to actual $sp (assumes correct stack
+#   usage! Large offsets with register $sp may cause problems. So |imm| ≤ 16;
+#   i.e., local usage, non-large stack-size, |stack| ≤ 2^16)
+.eqv DATA_SIZE 256
+.eqv REG_SP 29
+
+.data
+# 32 0-initialized words
+rf: .word 0:32
+# interpreted-programs get 256 words for data (but this is nowhere enforced! so
+# a bug could cause serious data corruption)
+data: .word 0:DATA_SIZE
+
+.macro reset_mem # $t0
+    reset_rf: li $t0 0
+    rf_loop:
+        bgei $t0 32 reset_data
+        sw $0 rf($t0)
+        addi $t0 $t0 1
+        j rf_loop
+    reset_data: li $t0 0
+    data_loop:
+        bgei $t0 DATA_SIZE end
+        sw $0 data($t0)
+        addi $t0 $t0 1
+        j data_loop
+    end:
+.end_macro
+
+.eqv DATA_START 0x10010000
+.eqv TEXT_START 0x00400000
+
+# in _reg macros, %reg stands for a register containing a register number (0-31)
+# this in contrast to all other macros, where %reg is a register name, usually
+# for storing the results of the macro
+.macro l_reg (%reg, %out) # %reg, %out
+    case %reg 0 always_zero
+    case %reg REG_SP do_sp
+    case default
+    always_zero:
+        add %out $0 $0
+        case_break end
+    do_sp:
+        add %out $0 $sp
+        # no fallthrough, in case rf[sp] is not correct
+        case_break end
+    default:
+        # word-align memory address
+        sll %reg %reg 2
+        lw %out rf(%reg)
+    end:
+.end_macro
+
+.macro s_reg (%reg, %in) # %reg, $sp
+    # cannot write to $0
+    case %reg 0 skip_zero
+    case %reg REG_SP do_sp
+    case default
+    skip_zero:
+        case_break end
+    do_sp:
+        add $sp $0 %in
+        # fallthrough
+    default:
+        # word-align memory address
+        sll %reg %reg 2
+        sw %in rf(%reg)
+    end:
+.end_macro
+
+.macro l_data (%addr, %rs, %reg) # %addr, %rs, %reg
+    case %rs REG_SP do_sp
+    case default
+    do_sp:
+        add %addr %addr $sp
+        case_break end
+    default:
+        l_reg %rs %rs
+        add %addr %addr %rs
+        subi %addr %addr DATA_START
+    end:
+        lw %reg data(%addr)
+.end_macro
+
+.macro s_data (%addr, %rs, %reg) # %addr, %rs, %reg
+    case %rs REG_SP do_sp
+    case default
+    do_sp:
+        add %addr %addr $sp
+        case_break end
+    default:
+        l_reg %rs %rs
+        add %addr %addr %rs
+        subi %addr %addr DATA_START
+    end:
+        sw %reg data(%addr)
+.end_macro
+
+# target computations
+.macro bt (%instr, %reg) # %reg
+    sign_ext_imm %instr %reg
+    sll %reg 2
+    l_pc $at
+    add %reg %reg $at
+    addi %reg %reg 4
+    subi %reg %reg TEXT_START
+.end_macro
+
+.macro jt (%instr, %reg) # %reg
+    rs %instr %reg
+    l_reg %reg %reg
+    subi %reg %reg TEXT_START
+.end_macro
+
+.macro j_addr (%instr, %reg) # %reg
+    addr %instr %reg
+    subi %reg %reg TEXT_START
+.end_macro

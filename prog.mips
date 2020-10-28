@@ -1,0 +1,98 @@
+# branch-x-immediate {{{
+# branches based on %reg, %imm
+# %b should be a branch-instruction
+.macro bxi (%b %reg %imm %lab) # $at
+    li $at %imm
+    %b %reg $at %lab
+.end_macro
+
+.eqv beqi bxi beq
+.eqv bgei bxi bge
+.eqv blei bxi ble
+.eqv bgti bxi bgt
+.eqv blti bxi blt
+# }}}
+
+# if {{{
+# an assembly if-statement
+# - %b %lhs %rhs must be a simple branch-instruction without its label
+# - translate the requisite conditional before calling if
+# - %t must be a .macro or .eqv
+.macro if (%b %lhs %rhs, %t)
+    %b %lhs %rhs t
+    j skip_t
+    t: %t
+    skip_t:
+.end_macro
+
+# an assembly if-else-statement
+# - %b %lhs %rhs must be a simple branch-instruction without its label
+# - translate the requisite conditional before calling if
+# - %t, %e must be a .macro or .eqv
+.macro if (%b %lhs %rhs, %t, %e)
+    %b %lhs %rhs e
+    %t
+    j skip_e
+    e: %e
+    skip_e:
+.end_macro
+# }}}
+
+# while {{{
+# no breaks or continues, b/c auto-generated labels!
+
+# an assembly do-while statement
+# - %body must be a .macro or .eqv
+# - %b %lhs %rhs must be a simple branch-instruction without its label
+# - translate the requisite conditional as the last part of %body
+.macro do_while (%body, %b %lhs %rhs)
+    loop: %body
+    %b %lhs %rhs loop
+.end_macro
+
+# an assembly while statement
+# - %body must be a .macro or .eqv
+# - %b %lhs %rhs must be a simple branch-instruction without its label
+# - translate the requisite conditional as the last part of %body and before
+#   calling while
+.macro while (%b %lhs %rhs, %body)
+    loop: %b %lhs %rhs body
+    j end
+    body: %body
+    j loop
+    end:
+.end_macro
+# while }}}
+
+# switch-case {{{
+# to write (k: 32-bit int)
+#   switch(k) {
+#       case a: { A } break;
+#       case b: { B } break;
+#       case c: { C } break;
+#       default: { D }
+#   }
+#   ...
+# we translate as
+#   case (k, a, A)
+#   case (k, b, B)
+#   case (k, c, C)
+#   case (default)
+#   A: { A } case_break (end)
+#   B: { B } case_break (end)
+#   C: { C } case_break (end)
+#   default: { D }
+#   end: ...
+# omit case_break(end) for fall-through
+.macro case (%k, %val, %block)
+    beqi %k, %val, %block
+.end_macro
+
+.macro case (%default)
+    j %default
+.end_macro
+
+.macro case_break (%end)
+    j %end
+.end_macro
+# switch-case }}}

@@ -1,0 +1,17 @@
+#! /bin/sh
+set -eu
+
+main () {
+  case $# in
+    1) : ;;
+    *)
+      printf '%s\n' "usage: $0 reg-name" >&2
+      exit 1
+      ;;
+  esac
+  pbpaste > bmp/reg-"$1".bmp
+  git add bmp/reg-"$1".bmp
+  git commit -m "add \$$1 bitmap"
+}
+
+main "$@"

@@ -1,0 +1,8 @@
+#! /bin/sh
+
+for f in bmp/* ; do
+  for g in bmp/* ; do
+    if [ "$f" = "$g" ]; then continue ; fi
+    diff -qs "$f" "$g"
+  done
+done | awk '!/differ/'

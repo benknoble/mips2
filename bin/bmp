@@ -9,9 +9,9 @@ main () {
       exit 1
       ;;
   esac
-  pbpaste > bmp/reg-"$1".bmp
-  git add bmp/reg-"$1".bmp
-  git commit -m "add \$$1 bitmap"
+  pbpaste > bmp/"$1".bmp
+  git add bmp/"$1".bmp
+  git commit -m "add $1 bitmap"
 }
 
 main "$@"

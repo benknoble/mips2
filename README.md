@@ -10,6 +10,8 @@ current instruction and to display the current set of registers.
 
 Design documentation to come.
 
+### Building examples into the interpreter
+
 The `makefile` can build `.hex` files (suitable for inclusion in the
 interpreter) and `.mem` files (raw hex-codes, suitable for inclusion in a
 Verilog description with `$readmemh`) from the corresponding `.mips` file,
@@ -24,3 +26,17 @@ Set the environment or make variable `MARS` to the path to the jar.
 Hex and memory dumps of all the examples are included with the repository.
 
 The `makefile` can also runs mars, under the same conditions, as a convenience.
+
+---
+
+### About the sprites
+
+The sprites were generated using (a version of) a friend's tool,
+[spritemaker](https://github.com/abrahampost/spritemaker.git).
+
+The script `bin/bmp` uses `pbpaste` (macOS) to automatically convert the
+clipboard contents into a `.bmp` file and commit it. Users on other platforms
+could replace `pbpaste` with, e.g., `xsel ...` or another program.
+
+The script `bin/no-bmps-the-same` double-checks that all bitmaps differ (but it
+is quadratic in the number of bitmaps, so expect to wait).

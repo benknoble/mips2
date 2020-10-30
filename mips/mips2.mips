@@ -56,6 +56,11 @@ interpreter:
         case op_default
 
         DO_LW: # {{{
+            sign_ext_imm $s0 $t0
+            rs $s0 $t1
+            l_data $t0 $t1 $t2
+            rt $s0 $t0
+            s_reg $t0 $t2
 
             l_pc $t0
             addi $t0 $t0 4

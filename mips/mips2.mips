@@ -1,0 +1,24 @@
+# programming macros
+.include "prog.mips"
+
+# constant definitions (opcodes, funcs, etc.)
+# macros for extracting register-numbers, etc.
+.include "instr.mips"
+
+# macros for accessing memory, PC, simulated registers
+.include "mem.mips"
+
+# # IO facilities, esp. as macros?
+# .include "io.mips"
+
+# # assembled programs in labeled .data blocks
+# .include "<sample_mips>.hex"
+# # …
+
+# main program
+.text
+# menu:
+#   …
+
+interpreter:
+    TODO

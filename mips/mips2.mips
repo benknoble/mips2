@@ -289,6 +289,7 @@ interpreter:
             DO_JR: # {{{
                 rs $s0 $t0
                 l_reg $t0 $t0
+                subi $t0 $t0 TEXT_START
                 s_pc $t0
                 case_break r_end # }}}
             DO_JALR: # {{{
@@ -300,6 +301,7 @@ interpreter:
                 # same as DO_JR
                 rs $s0 $t0
                 l_reg $t0 $t0
+                subi $t0 $t0 TEXT_START
                 s_pc $t0
                 case_break r_end # }}}
 

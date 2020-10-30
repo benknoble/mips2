@@ -9,3 +9,18 @@ Takes advantage of memory-mapped IO from hardware to play sounds based on the
 current instruction and to display the current set of registers.
 
 Design documentation to come.
+
+The `makefile` can build `.hex` files (suitable for inclusion in the
+interpreter) and `.mem` files (raw hex-codes, suitable for inclusion in a
+Verilog description with `$readmemh`) from the corresponding `.mips` file,
+provided you have
+
+- a java installation; and
+- the MARS jar ([MARS
+  homepage](http://courses.missouristate.edu/kenvollmar/mars/index.htm)).
+
+Set the environment or make variable `MARS` to the path to the jar.
+
+Hex and memory dumps of all the examples are included with the repository.
+
+The `makefile` can also runs mars, under the same conditions, as a convenience.

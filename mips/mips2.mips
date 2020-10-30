@@ -56,24 +56,54 @@ interpreter:
         case op_default
 
         DO_LW: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_SW: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_ADDI: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_ADDIU: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_SLTI: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_SLTIU: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_ORI: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_LUI: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_ANDI: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_XORI: # {{{
+            l_pc $t0
+            addi $t0 $t0 4
+            s_pc $t0
             case_break op_end # }}}
         DO_BEQ: # {{{
             case_break op_end # }}}

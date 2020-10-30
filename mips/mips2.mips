@@ -102,12 +102,24 @@ interpreter:
             s_pc $t0
             case_break op_end # }}}
         DO_SLTI: # {{{
+            sign_ext_imm $s0 $t0
+            rs $s0 $t1
+            l_reg $t1 $t1
+            slt $t0 $t1 $t0
+            rt $s0 $t1
+            s_reg $t1 $t0
 
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_SLTIU: # {{{
+            sign_ext_imm $s0 $t0
+            rs $s0 $t1
+            l_reg $t1 $t1
+            sltu $t0 $t1 $t0
+            rt $s0 $t1
+            s_reg $t1 $t0
 
             l_pc $t0
             addi $t0 $t0 4

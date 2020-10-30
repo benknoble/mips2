@@ -106,38 +106,201 @@ interpreter:
             case r_default
 
             DO_ADD: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                add $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_ADDU: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                addu $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SUB: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                sub $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_AND: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                and $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_OR: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                or $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_XOR: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                xor $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_NOR: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                nor $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SLT: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                slt $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SLTU: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                sltu $t0 $t0 $t1
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SLL: # {{{
+                shamt $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                # sllv because we don't know the shamt ($t0)
+                sllv $t0 $t1 $t0
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SLLV: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                sllv $t0 $t1 $t0
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SRL: # {{{
+                shamt $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                srlv $t0 $t1 $t0
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SRLV: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                srlv $t0 $t1 $t0
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SRA: # {{{
+                shamt $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                srav $t0 $t1 $t0
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_SRAV: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                rt $s0 $t1
+                l_reg $t1 $t1
+                srav $t0 $t1 $t0
+                rd $s0 $t1
+                s_reg $t1 $t0
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
                 case_break r_end # }}}
             DO_JR: # {{{
+                rs $s0 $t0
+                l_reg $t0 $t0
+                s_pc $t0
                 case_break r_end # }}}
             DO_JALR: # {{{
+                # store PC + 4 in $ra
+                l_pc $t0
+                addi $t0 $t0 4
+                li $t1 REG_RA
+                s_reg $t1 $t0
+                # same as DO_JR
+                rs $s0 $t0
+                l_reg $t0 $t0
+                s_pc $t0
                 case_break r_end # }}}
 
             r_default:

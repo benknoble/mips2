@@ -31,6 +31,7 @@ pc: .word 0
 #   i.e., local usage, non-large stack-size, |stack| ≤ 2^16)
 .eqv DATA_SIZE 256
 .eqv REG_SP 29
+.eqv REG_RA 31
 
 .data
 # 32 0-initialized words

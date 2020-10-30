@@ -13,12 +13,148 @@
 
 # # assembled programs in labeled .data blocks
 # .include "<sample_mips>.hex"
+.include "mips/iter-fact-12.hex" # iterfact12
 # # …
+
+.data
+progbase: .space 4 # = 1 word
 
 # main program
 .text
-# menu:
-#   …
+menu:
+    # hardcoding my only example for now
+    la $t0 iterfact12
+    sw $t0 progbase
+    s_pc $t0
+    jal interpreter
+    # for mars only
+    j mars_end
 
 interpreter:
-    TODO
+    reset_mem
+    interpreter_loop: # {{{
+        l_instr $s0
+        # halt when instruction is 0x00000000
+        beq $s0 $0 halt
+
+        opcode $s0 $s1
+        case $s1 OP_LW DO_LW
+        case $s1 OP_SW DO_SW
+        case $s1 OP_ADDI DO_ADDI
+        case $s1 OP_ADDIU DO_ADDIU
+        case $s1 OP_SLTI DO_SLTI
+        case $s1 OP_SLTIU DO_SLTIU
+        case $s1 OP_ORI DO_ORI
+        case $s1 OP_LUI DO_LUI
+        case $s1 OP_ANDI DO_ANDI
+        case $s1 OP_XORI DO_XORI
+        case $s1 OP_BEQ DO_BEQ
+        case $s1 OP_BNE DO_BNE
+        case $s1 OP_J DO_J
+        case $s1 OP_JAL DO_JAL
+        case $s1 0 DO_R
+        case op_default
+
+        DO_LW: # {{{
+            case_break op_end # }}}
+        DO_SW: # {{{
+            case_break op_end # }}}
+        DO_ADDI: # {{{
+            case_break op_end # }}}
+        DO_ADDIU: # {{{
+            case_break op_end # }}}
+        DO_SLTI: # {{{
+            case_break op_end # }}}
+        DO_SLTIU: # {{{
+            case_break op_end # }}}
+        DO_ORI: # {{{
+            case_break op_end # }}}
+        DO_LUI: # {{{
+            case_break op_end # }}}
+        DO_ANDI: # {{{
+            case_break op_end # }}}
+        DO_XORI: # {{{
+            case_break op_end # }}}
+        DO_BEQ: # {{{
+            case_break op_end # }}}
+        DO_BNE: # {{{
+            case_break op_end # }}}
+        DO_J: # {{{
+            case_break op_end # }}}
+        DO_JAL: # {{{
+            case_break op_end # }}}
+
+        DO_R: # {{{
+            funct $s0 $s1
+            case $s1 FUNC_ADD DO_ADD
+            case $s1 FUNC_ADDU DO_ADDU
+            case $s1 FUNC_SUB DO_SUB
+            case $s1 FUNC_AND DO_AND
+            case $s1 FUNC_OR DO_OR
+            case $s1 FUNC_XOR DO_XOR
+            case $s1 FUNC_NOR DO_NOR
+            case $s1 FUNC_SLT DO_SLT
+            case $s1 FUNC_SLTU DO_SLTU
+            case $s1 FUNC_SLL DO_SLL
+            case $s1 FUNC_SLLV DO_SLLV
+            case $s1 FUNC_SRL DO_SRL
+            case $s1 FUNC_SRLV DO_SRLV
+            case $s1 FUNC_SRA DO_SRA
+            case $s1 FUNC_SRAV DO_SRAV
+            case $s1 FUNC_JR DO_JR
+            case $s1 FUNC_JALR DO_JALR
+            case r_default
+
+            DO_ADD: # {{{
+                case_break r_end # }}}
+            DO_ADDU: # {{{
+                case_break r_end # }}}
+            DO_SUB: # {{{
+                case_break r_end # }}}
+            DO_AND: # {{{
+                case_break r_end # }}}
+            DO_OR: # {{{
+                case_break r_end # }}}
+            DO_XOR: # {{{
+                case_break r_end # }}}
+            DO_NOR: # {{{
+                case_break r_end # }}}
+            DO_SLT: # {{{
+                case_break r_end # }}}
+            DO_SLTU: # {{{
+                case_break r_end # }}}
+            DO_SLL: # {{{
+                case_break r_end # }}}
+            DO_SLLV: # {{{
+                case_break r_end # }}}
+            DO_SRL: # {{{
+                case_break r_end # }}}
+            DO_SRLV: # {{{
+                case_break r_end # }}}
+            DO_SRA: # {{{
+                case_break r_end # }}}
+            DO_SRAV: # {{{
+                case_break r_end # }}}
+            DO_JR: # {{{
+                case_break r_end # }}}
+            DO_JALR: # {{{
+                case_break r_end # }}}
+
+            r_default:
+                j error
+            r_end:
+            case_break op_end # }}}
+
+        op_default:
+            j error
+        op_end:
+        j interpreter_loop # }}}
+
+    halt:
+    jr $ra
+
+error:
+    # 0x00000000, also my halt code, easy to distinguish
+    sll $0 $0 $0
+
+mars_end:

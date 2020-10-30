@@ -56,51 +56,61 @@ interpreter:
         case op_default
 
         DO_LW: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_SW: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_ADDI: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_ADDIU: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_SLTI: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_SLTIU: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_ORI: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_LUI: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_ANDI: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
             case_break op_end # }}}
         DO_XORI: # {{{
+
             l_pc $t0
             addi $t0 $t0 4
             s_pc $t0
@@ -143,6 +153,7 @@ interpreter:
                 add $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -155,6 +166,7 @@ interpreter:
                 addu $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -167,6 +179,7 @@ interpreter:
                 sub $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -179,6 +192,7 @@ interpreter:
                 and $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -191,6 +205,7 @@ interpreter:
                 or $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -203,6 +218,7 @@ interpreter:
                 xor $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -215,6 +231,7 @@ interpreter:
                 nor $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -227,6 +244,7 @@ interpreter:
                 slt $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -239,6 +257,7 @@ interpreter:
                 sltu $t0 $t0 $t1
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -252,6 +271,7 @@ interpreter:
                 sllv $t0 $t1 $t0
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -264,6 +284,7 @@ interpreter:
                 sllv $t0 $t1 $t0
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -276,6 +297,7 @@ interpreter:
                 srlv $t0 $t1 $t0
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -288,6 +310,7 @@ interpreter:
                 srlv $t0 $t1 $t0
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -300,6 +323,7 @@ interpreter:
                 srav $t0 $t1 $t0
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0
@@ -312,6 +336,7 @@ interpreter:
                 srav $t0 $t1 $t0
                 rd $s0 $t1
                 s_reg $t1 $t0
+
                 l_pc $t0
                 addi $t0 $t0 4
                 s_pc $t0

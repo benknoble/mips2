@@ -67,6 +67,11 @@ interpreter:
             s_pc $t0
             case_break op_end # }}}
         DO_SW: # {{{
+            sign_ext_imm $s0 $t0
+            rs $s0 $t1
+            rt $s0 $t2
+            l_reg $t2 $t2
+            s_data $t0 $t1 $t2
 
             l_pc $t0
             addi $t0 $t0 4

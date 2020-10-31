@@ -152,6 +152,11 @@ data: .word 0:DATA_SIZE
     l_reg %reg %reg
 .end_macro
 
-.macro j_addr (%instr, %reg) # %reg
+.macro j_addr (%instr, %pc, %reg) # %pc, %reg
+    # {0…,instr[25:0],2'b00}
     addr %instr %reg
+    # pc[31:28]
+    andi %pc %pc 0xF0000000
+    # {pc[31:28],instr[25:0],2'b00}
+    add %reg %reg %pc
 .end_macro

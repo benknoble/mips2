@@ -169,8 +169,36 @@ interpreter:
             s_pc $t0
             case_break op_end # }}}
         DO_BEQ: # {{{
+            rs $s0 $t0
+            l_reg $t0 $t0
+            rt $s0 $t1
+            l_reg $t1 $t1
+            .macro beq_true
+                bt $s0 $t2
+                s_pc $t2
+            .end_macro
+            .macro beq_false
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
+            .end_macro
+            if beq $t0 $t1 beq_true beq_false
             case_break op_end # }}}
         DO_BNE: # {{{
+            rs $s0 $t0
+            l_reg $t0 $t0
+            rt $s0 $t1
+            l_reg $t1 $t1
+            .macro bne_true
+                bt $s0 $t2
+                s_pc $t2
+            .end_macro
+            .macro bne_false
+                l_pc $t0
+                addi $t0 $t0 4
+                s_pc $t0
+            .end_macro
+            if bne $t0 $t1 bne_true bne_false
             case_break op_end # }}}
         DO_J: # {{{
             l_pc $t0

@@ -30,11 +30,11 @@
 # - translate the requisite conditional before calling if
 # - %t, %e must be a .macro or .eqv
 .macro if (%b %lhs %rhs, %t, %e)
-    %b %lhs %rhs e
-    %t
-    j skip_e
-    e: %e
-    skip_e:
+    %b %lhs %rhs t
+    %e
+    j skip_t
+    t: %t
+    skip_t:
 .end_macro
 # }}}
 

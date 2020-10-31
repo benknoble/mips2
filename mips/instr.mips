@@ -64,7 +64,6 @@
     # re-scale, preserve sign
     sra %reg %reg imm_shift
 .end_macro
-# hand-edited
 
 .macro addr (%instr, %reg) # %reg
     andi %reg %instr addr_mask
@@ -72,6 +71,7 @@
     # word align
     sll %reg %reg 2
 .end_macro
+# hand-edited
 
 # These are non-R-type. OPCODES defined here:
 .eqv OP_LW 0x23

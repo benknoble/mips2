@@ -173,9 +173,16 @@ interpreter:
         DO_BNE: # {{{
             case_break op_end # }}}
         DO_J: # {{{
+            l_pc $t0
+            j_addr $s0 $t0 $t1
+            s_pc $t1
             case_break op_end # }}}
         DO_JAL: # {{{
-            case_break op_end # }}}
+            l_pc $t0
+            addi $t0 $t0 4
+            li $t1 REG_RA
+            s_reg $t1 $t0
+            j DO_J # }}}
 
         DO_R: # {{{
             funct $s0 $s1

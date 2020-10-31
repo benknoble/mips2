@@ -13,7 +13,7 @@
 
 # # assembled programs in labeled .data blocks
 # .include "<sample_mips>.hex"
-.include "mips/iter-fact-12.hex" # iterfact12
+.include "iter-fact-12.hex" # iterfact12
 # # …
 
 # main program

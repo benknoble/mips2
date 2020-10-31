@@ -395,8 +395,7 @@ interpreter:
                 s_pc $t0
                 case_break r_end # }}}
             DO_JR: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
+                jt $s0 $t0
                 s_pc $t0
                 case_break r_end # }}}
             DO_JALR: # {{{

@@ -456,6 +456,6 @@ interpreter:
 
 error:
     # 0x00000000, also my halt code, easy to distinguish
-    sll $0 $0 $0
+    sll $0 $0 0
 
 mars_end:

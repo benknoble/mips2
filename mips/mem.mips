@@ -141,7 +141,7 @@ data: .word 0:DATA_SIZE
 # absolute in the text-segment
 .macro bt (%instr, %reg) # %reg
     sign_ext_imm %instr %reg
-    sll %reg 2
+    sll %reg %reg 2
     l_pc $at
     add %reg %reg $at
     addi %reg %reg 4

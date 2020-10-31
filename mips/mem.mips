@@ -53,17 +53,19 @@ rf: .word 0:32
 # a bug could cause serious data corruption)
 data: .word 0:DATA_SIZE
 
-.macro reset_mem # $t0
+.macro reset_mem # $t0, $t1
     reset_rf: li $t0 0
     rf_loop:
         bgei $t0 32 reset_data
-        sw $0 rf($t0)
+        sll $t1 $t0 2
+        sw $0 rf($t1)
         addi $t0 $t0 1
         j rf_loop
     reset_data: li $t0 0
     data_loop:
         bgei $t0 DATA_SIZE end
-        sw $0 data($t0)
+        sll $t1 $t0 2
+        sw $0 data($t1)
         addi $t0 $t0 1
         j data_loop
     end:

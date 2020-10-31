@@ -1,9 +1,18 @@
 # requires prog.mips
 # requires instr.mips
 
+.eqv DATA_START 0x10010000
+.eqv TEXT_START 0x00400000
+
 # macros for pc
 .data
-pc: .word 0
+pc: .word 0 # **instruction = *text-address
+progbase: .word 0 # **instruction = *text-address
+
+.macro reset_pc # $t0
+    li $t0 TEXT_START
+    sw $t0 pc
+.end_macro
 
 .macro l_pc (%reg) # %reg
     lw %reg pc
@@ -13,9 +22,13 @@ pc: .word 0
     sw %reg pc
 .end_macro
 
-.macro l_instr (%reg) # %reg
+.macro l_instr (%reg) # %reg, $at
     l_pc %reg
-    # %reg = Mem[Mem[pc]]; assume pc word-aligned
+    subi %reg %reg TEXT_START
+    lw $at progbase
+    add %reg %reg $at
+    # %reg = Mem[Mem[pc] - TEXT_START + Mem[progbase]]
+    # assume pc word-aligned
     lw %reg 0(%reg)
 .end_macro
 
@@ -55,9 +68,6 @@ data: .word 0:DATA_SIZE
         j data_loop
     end:
 .end_macro
-
-.eqv DATA_START 0x10010000
-.eqv TEXT_START 0x00400000
 
 # in _reg macros, %reg stands for a register containing a register number (0-31)
 # this in contrast to all other macros, where %reg is a register name, usually
@@ -126,22 +136,22 @@ data: .word 0:DATA_SIZE
 .end_macro
 
 # target computations
+# all are absolute, and are in the text-segment (i.e., ≥ TEXT_START)
+# l_instr takes care of loading from pc relative to progbase, assuming pc is
+# absolute in the text-segment
 .macro bt (%instr, %reg) # %reg
     sign_ext_imm %instr %reg
     sll %reg 2
     l_pc $at
     add %reg %reg $at
     addi %reg %reg 4
-    subi %reg %reg TEXT_START
 .end_macro
 
 .macro jt (%instr, %reg) # %reg
     rs %instr %reg
     l_reg %reg %reg
-    subi %reg %reg TEXT_START
 .end_macro
 
 .macro j_addr (%instr, %reg) # %reg
     addr %instr %reg
-    subi %reg %reg TEXT_START
 .end_macro

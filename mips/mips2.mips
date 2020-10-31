@@ -16,21 +16,18 @@
 .include "mips/iter-fact-12.hex" # iterfact12
 # # …
 
-.data
-progbase: .space 4 # = 1 word
-
 # main program
 .text
 menu:
     # hardcoding my only example for now
     la $t0 iterfact12
     sw $t0 progbase
-    s_pc $t0
     jal interpreter
     # for mars only
     j mars_end
 
 interpreter:
+    reset_pc
     reset_mem
     interpreter_loop: # {{{
         l_instr $s0
@@ -400,7 +397,6 @@ interpreter:
             DO_JR: # {{{
                 rs $s0 $t0
                 l_reg $t0 $t0
-                subi $t0 $t0 TEXT_START
                 s_pc $t0
                 case_break r_end # }}}
             DO_JALR: # {{{
@@ -409,12 +405,7 @@ interpreter:
                 addi $t0 $t0 4
                 li $t1 REG_RA
                 s_reg $t1 $t0
-                # same as DO_JR
-                rs $s0 $t0
-                l_reg $t0 $t0
-                subi $t0 $t0 TEXT_START
-                s_pc $t0
-                case_break r_end # }}}
+                j DO_JR # }}}
 
             r_default:
                 j error

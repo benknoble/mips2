@@ -42,15 +42,15 @@ progbase: .word 0 # **instruction = *text-address
 # - whenever sw/lw involves 29, forward to actual $sp (assumes correct stack
 #   usage! Large offsets with register $sp may cause problems. So |imm| ≤ 16;
 #   i.e., local usage, non-large stack-size, |stack| ≤ 2^16)
-.eqv DATA_SIZE 256
+.eqv DATA_SIZE 16
 .eqv REG_SP 29
 .eqv REG_RA 31
 
 .data
 # 32 0-initialized words
 rf: .word 0:32
-# interpreted-programs get 256 words for data (but this is nowhere enforced! so
-# a bug could cause serious data corruption)
+# interpreted-programs get DATA_SIZE words for data (but this is nowhere
+# enforced! so a bug could cause serious data corruption)
 data: .word 0:DATA_SIZE
 
 .macro reset_mem # $t0, $t1

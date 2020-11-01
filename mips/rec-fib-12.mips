@@ -1,0 +1,46 @@
+# fib(12) = 144 = 0x00000090
+# result placed in $v0, as convention
+
+.eqv halt sll $0 $0 0
+
+.text
+
+li $a0 12
+jal rec_fib
+# mips2 halt
+halt
+# mips2 doesn't see this
+j end
+
+rec_fib:
+    beq $a0 $0 fib_base_case0
+    li $t0 1
+    beq $a0 $t0 fib_base_case1
+        # stack {{{
+        addi $sp $sp -8
+        sw $ra 4($sp)
+        sw $fp 0($sp)
+        addi $fp $sp 4
+        addi $sp $sp -4
+        sw $s0 0($sp)
+        # }}}
+        move $s0 $a0
+        subi $a0 $s0 1
+        jal rec_fib
+        subi $a0 $s0 2
+        move $s0 $v0
+        jal rec_fib
+        add $v0 $v0 $s0
+        # stack {{{
+        lw $s0 -8($fp)
+        addi $sp $fp 4
+        lw $ra 0($fp)
+        lw $fp -4($fp)
+        # }}}
+        j end_fib
+    fib_base_case0: li $v0 0
+                    j end_fib
+    fib_base_case1: li $v0 1
+    end_fib: jr $ra
+
+end:

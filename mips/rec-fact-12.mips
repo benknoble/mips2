@@ -1,0 +1,66 @@
+# 12! = 479001600 = 0x1C8CFC00
+# result placed in $v0, as convention
+
+.eqv halt sll $0 $0 0
+
+.text
+
+li $a0 12
+jal rec_fact
+# mips2 halt
+halt
+# mips2 doesn't see this
+j end
+
+rec_fact:
+    li $t0 1
+    blt $a0 $t0 fact_base_case
+        # stack {{{
+        addi $sp $sp -8
+        sw $ra 4($sp)
+        sw $fp 0($sp)
+        addi $fp $sp 4
+        addi $sp $sp -4
+        sw $s0 0($sp)
+        # }}}
+        move $s0 $a0
+        subi $a0 $a0 1
+        jal rec_fact
+        move $a1 $v0
+        move $a0 $s0
+        jal rec_multiply # result in $v0
+        # stack {{{
+        lw $s0 -8($fp)
+        addi $sp $fp 4
+        lw $ra 0($fp)
+        lw $fp -4($fp)
+        # }}}
+        j end_fact
+    fact_base_case: li $v0 1
+    end_fact: jr $ra
+
+rec_multiply:
+    beq $a0 $0 mult_base_case
+        # stack {{{
+        addi $sp $sp -8
+        sw $ra 4($sp)
+        sw $fp 0($sp)
+        addi $fp $sp 4
+        addi $sp $sp -4
+        sw $s0 0($sp)
+        # }}}
+        move $s0 $a1
+        subi $a0 $a0 1
+        jal rec_multiply # $v0 = ($a0 - 1) * $a1
+        add $v0 $v0 $s0 # add remaining $a1 to make $a0 * $a1
+        # stack {{{
+        lw $s0 -8($fp)
+        addi $sp $fp 4
+        lw $ra 0($fp)
+        lw $fp -4($fp)
+        # }}}
+        j end_multiply
+    mult_base_case: move $v0 $0
+    end_multiply: jr $ra
+
+end:

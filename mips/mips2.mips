@@ -14,13 +14,14 @@
 # # assembled programs in labeled .data blocks
 # .include "<sample_mips>.hex"
 .include "iter-fact-12.hex" # iterfact12
+.include "rec-fact-12.hex" # recfact12
 # # …
 
 # main program
 .text
 menu:
-    # hardcoding my only example for now
-    la $t0 iterfact12
+    # hardcoding examples for now
+    la $t0 recfact12
     sw $t0 progbase
     jal interpreter
     # for mars only

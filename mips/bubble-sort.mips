@@ -1,0 +1,123 @@
+# bubble sorts 10 integers, returns 1 if sorted at end
+# result placed in $v0, as convention
+# also places all 10 values in $t0-$t9, for visual confirmation
+
+.eqv halt sll $0 $0 0
+.eqv LENGTH 10
+
+.data
+array: .word 0:LENGTH
+
+.text
+
+# init array
+li $t0 0xc69020dc
+li $t1 0xc3848f98
+li $t2 0x40c0016f
+li $t3 0x55282432
+li $t4 0x81dfe057
+li $t5 0x52957459
+li $t6 0x25c0a1e3
+li $t7 0x47a7a168
+li $t8 0xbf60aa02
+li $t9 0x683dd5b0
+
+la $s0 array
+sw $t0 0($s0)
+sw $t1 4($s0)
+sw $t2 8($s0)
+sw $t3 12($s0)
+sw $t4 16($s0)
+sw $t5 20($s0)
+sw $t6 24($s0)
+sw $t7 28($s0)
+sw $t8 32($s0)
+sw $t9 36($s0)
+
+move $a0 $s0
+li $a1 LENGTH
+jal bubblesort
+move $a0 $s0
+li $a1 LENGTH
+jal sortedp
+
+lw $t0 0($s0)
+lw $t1 4($s0)
+lw $t2 8($s0)
+lw $t3 12($s0)
+lw $t4 16($s0)
+lw $t5 20($s0)
+lw $t6 24($s0)
+lw $t7 28($s0)
+lw $t8 32($s0)
+lw $t9 36($s0)
+
+# mips2 halt
+halt
+# mips2 doesn't see this
+j end
+
+bubblesort:
+    # swapped = $t0 = false
+    move $t0 $0
+    move $t1 $0
+    bubblesort_while:
+    move $t2 $a1
+    subi $t2 $t2 1
+    # while $t1 < $a1 - 1
+    bge $t1 $t2 bubblesort_while_end
+        # $t4 = &$a0[i]
+        # $t2 = $a0[i]
+        sll $t4 $t1 2
+        add $t4 $t4 $a0
+        lw $t2 0($t4)
+        # $t1++
+        addi $t1 $t1 1
+        # $t5 = &$a0[i+1]
+        # $t3 = $a0[i+1]
+        sll $t5 $t1 2
+        add $t5 $t5 $a0
+        lw $t3 0($t5)
+
+        # if $t2 ≤ $t3, continue
+        ble $t2 $t3 bubblesort_continue
+        # else swap
+            # *$t5 (= &$a0[i+1]) = $t2 (= $a0[i])
+            sw $t2 0($t5)
+            # *$t4 (= &$a0[i]) = $t3 (= $a0[i+1])
+            sw $t3 0($t4)
+            # remember the swap
+            add $t0 $t0 1
+
+        bubblesort_continue: j bubblesort_while
+
+    bubblesort_while_end: bne $t0 $0 bubblesort
+    jr $ra
+
+sortedp:
+    move $t0 $0
+    sortedp_while:
+    move $t1 $a1
+    subi $t1 $t1 1
+    # while $t0 < $a1-1
+    bge $t0 $t1 sortedp_while_end
+        # $t1 = $a0[i]
+        sll $t1 $t0 2
+        add $t1 $t1 $a0
+        lw $t1 0($t1)
+        # $t0++
+        addi $t0 $t0 1
+        # $t2 = $a0[i+1]
+        sll $t2 $t0 2
+        add $t2 $t2 $a0
+        lw $t2 0($t2)
+        # if $t1 ≤ $t2, continue
+        ble $t1 $t2 sortedp_continue
+        # else, return 0 (not sorted)
+            li $v0 0
+            j sortedp_end
+        sortedp_continue: j sortedp_while
+    sortedp_while_end: li $v0 1
+    sortedp_end: jr $ra
+
+end:

@@ -1,0 +1,171 @@
+#! /usr/bin/env python3
+
+import os.path
+import sys
+from typing import *
+
+
+def read_bmap(fname: str) -> Dict[str, int]:
+    result = {}
+    with open(fname, "r") as f:
+        for line in f.readlines():
+            [char, name] = line.split()
+            name = os.path.basename(name)
+            name, _ = os.path.splitext(name)
+            charcode = int(char)
+            result[name] = charcode
+    return result
+
+
+def reg_row(name1: str, name2: str) -> List[str]:
+    return [
+        "blank",
+        f"reg-{name1}",
+        "sym-eq",
+        "sym-0x",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        f"reg-{name2}",
+        "sym-eq",
+        "sym-0x",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "blank",
+    ]
+
+
+def lab_row(lab: str) -> List[str]:
+    return [
+        "blank",
+        f"lab-{lab}",
+        "sym-eq",
+        "sym-0x",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "hex-0",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+        "blank",
+    ]
+
+
+def blank_row() -> List[str]:
+    return ["blank"] * 40
+
+
+def control_row() -> List[str]:
+    row = [
+        "hex-0",
+        "blank",
+        "hex-1",
+        "blank",
+        "hex-2",
+        "blank",
+        "hex-3",
+        "blank",
+        "hex-4",
+        "blank",
+        "hex-5",
+    ]
+    return row + ["blank"] * (40 - len(row))
+
+
+initial_contents = (
+    reg_row("0", "at")
+    + reg_row("v0", "v1")
+    + reg_row("a0", "a1")
+    + reg_row("a2", "a3")
+    + reg_row("t0", "t1")
+    + reg_row("t2", "t3")
+    + reg_row("t4", "t5")
+    + reg_row("t6", "t7")
+    + reg_row("s0", "s1")
+    + reg_row("s2", "s3")
+    + reg_row("s4", "s5")
+    + reg_row("s6", "s7")
+    + reg_row("t8", "t9")
+    + reg_row("k0", "k1")
+    + reg_row("gp", "sp")
+    + reg_row("fp", "ra")
+    + lab_row("pc")
+    + lab_row("in")
+    + blank_row()
+    + control_row()
+)
+
+screen_contents = initial_contents + blank_row() * (
+    30 - len(initial_contents) // 40
+)
+
+
+def smem(bmap: Dict[str, int], screen_contents: List[str]) -> List[int]:
+    return [bmap[name] for name in screen_contents]
+
+
+def main(bmap_fname):
+    print("\n".join(map(str, smem(read_bmap(bmap_fname), screen_contents))))
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"usage: sys.argv[0] <bmap-file>")
+    else:
+        main(sys.argv[1])

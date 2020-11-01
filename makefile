@@ -27,6 +27,8 @@ bmem-map:
 	printf '%s\n' $^ | LC_ALL=C sort | nl -v0 > '$@'
 init.bmem:
 	printf '%s\n' $^ | LC_ALL=C sort | xargs cat > '$@'
+init.smem: bmp/*.bmp bmem-map bin/make-init-smem
+	bin/make-init-smem bmem-map > '$@'
 
 mars:
 	$(JAVA) $(JAVAFLAGS) -jar $(MARS) $(MARSFLAGS)

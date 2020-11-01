@@ -107,6 +107,7 @@ data: .word 0:DATA_SIZE
 .macro l_reg (%reg, %out) # %reg, %out
     case %reg REG_Z always_zero
     case %reg REG_SP do_sp
+    case %reg REG_FP do_fp
     case default
     always_zero:
         add %out $0 $0
@@ -114,6 +115,10 @@ data: .word 0:DATA_SIZE
     do_sp:
         add %out $0 $sp
         # no fallthrough, in case rf[sp] is not correct
+        case_break end
+    do_fp:
+        add %out $0 $fp
+        # no fallthrough, in case rf[fp] is not correct
         case_break end
     default:
         # word-align memory address
@@ -126,12 +131,18 @@ data: .word 0:DATA_SIZE
     # cannot write to $0
     case %reg REG_Z skip_zero
     case %reg REG_SP do_sp
+    case %reg REG_FP do_fp
     case default
     skip_zero:
         case_break end
     do_sp:
         add $sp $0 %in
         # fallthrough
+        j default
+    do_fp:
+        add $fp $0 %in
+        # fallthrough
+        j default
     default:
         # word-align memory address
         sll %reg %reg 2
@@ -141,9 +152,13 @@ data: .word 0:DATA_SIZE
 
 .macro l_data (%addr, %rs, %reg) # %addr, %rs, %reg
     case %rs REG_SP do_sp
+    case %rs REG_FP do_fp
     case default
     do_sp:
         add %addr %addr $sp
+        case_break end
+    do_fp:
+        add %addr %addr $fp
         case_break end
     default:
         l_reg %rs %rs
@@ -155,9 +170,13 @@ data: .word 0:DATA_SIZE
 
 .macro s_data (%addr, %rs, %reg) # %addr, %rs, %reg
     case %rs REG_SP do_sp
+    case %rs REG_FP do_sp
     case default
     do_sp:
         add %addr %addr $sp
+        case_break end
+    do_fp:
+        add %addr %addr $fp
         case_break end
     default:
         l_reg %rs %rs

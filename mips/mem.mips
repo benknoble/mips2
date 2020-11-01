@@ -105,7 +105,7 @@ data: .word 0:DATA_SIZE
 # this in contrast to all other macros, where %reg is a register name, usually
 # for storing the results of the macro
 .macro l_reg (%reg, %out) # %reg, %out
-    case %reg 0 always_zero
+    case %reg REG_Z always_zero
     case %reg REG_SP do_sp
     case default
     always_zero:
@@ -124,7 +124,7 @@ data: .word 0:DATA_SIZE
 
 .macro s_reg (%reg, %in) # %reg, $sp
     # cannot write to $0
-    case %reg 0 skip_zero
+    case %reg REG_Z skip_zero
     case %reg REG_SP do_sp
     case default
     skip_zero:

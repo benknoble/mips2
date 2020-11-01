@@ -355,7 +355,6 @@ interpreter:
                 case_break r_end # }}}
             DO_SLL: # {{{
                 shamt $s0 $t0
-                l_reg $t0 $t0
                 rt $s0 $t1
                 l_reg $t1 $t1
                 # sllv because we don't know the shamt ($t0)
@@ -382,7 +381,6 @@ interpreter:
                 case_break r_end # }}}
             DO_SRL: # {{{
                 shamt $s0 $t0
-                l_reg $t0 $t0
                 rt $s0 $t1
                 l_reg $t1 $t1
                 srlv $t0 $t1 $t0
@@ -408,7 +406,6 @@ interpreter:
                 case_break r_end # }}}
             DO_SRA: # {{{
                 shamt $s0 $t0
-                l_reg $t0 $t0
                 rt $s0 $t1
                 l_reg $t1 $t1
                 srav $t0 $t1 $t0

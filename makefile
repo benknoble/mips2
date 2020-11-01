@@ -22,5 +22,11 @@ JAVA = java
 	} > '$@.tmp'
 	mv '$@.tmp' '$@'
 
+init.bmem bmem-map: bmp/*.bmp
+bmem-map:
+	printf '%s\n' $^ | LC_ALL=C sort | nl -v0 > '$@'
+init.bmem:
+	printf '%s\n' $^ | LC_ALL=C sort | xargs cat > '$@'
+
 mars:
 	$(JAVA) $(JAVAFLAGS) -jar $(MARS) $(MARSFLAGS)

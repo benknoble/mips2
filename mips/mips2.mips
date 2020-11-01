@@ -16,13 +16,14 @@
 .include "iter-fact-12.hex" # iterfact12
 .include "rec-fact-12.hex" # recfact12
 .include "iter-fib-47.hex" # iterfib47
+.include "rec-fib-12.hex" # recfib12
 # # …
 
 # main program
 .text
 menu:
     # hardcoding examples for now
-    la $t0 iterfib47
+    la $t0 recfib12
     sw $t0 progbase
     jal interpreter
     # for mars only

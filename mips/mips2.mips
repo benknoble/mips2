@@ -17,13 +17,14 @@
 .include "rec-fact-12.hex" # recfact12
 .include "iter-fib-47.hex" # iterfib47
 .include "rec-fib-12.hex" # recfib12
+.include "bubble-sort.hex" # bubblesort
 # # …
 
 # main program
 .text
 menu:
     # hardcoding examples for now
-    la $t0 recfib12
+    la $t0 bubblesort
     sw $t0 progbase
     jal interpreter
     # for mars only

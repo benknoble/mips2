@@ -1,0 +1,25 @@
+# fib(47) = 2971215073 = 0xB11924E1
+# result placed in $v0, as convention
+
+.eqv halt sll $0 $0 0
+
+.text
+
+li $s0 47
+li $s1 0
+li $s2 1
+while: ble $s0 $0 end_while
+    addu $s3 $s1 $s2 # disable overflow with addu
+    move $s1 $s2
+    move $s2 $s3
+    subi $s0 $s0 1
+    j while
+end_while:
+move $v0 $s1
+
+# mips2 halt
+halt
+# mips2 doesn't see this
+j end
+
+end:

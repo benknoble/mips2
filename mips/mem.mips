@@ -43,7 +43,37 @@ progbase: .word 0 # **instruction = *text-address
 #   usage! Large offsets with register $sp may cause problems. So |imm| ≤ 16;
 #   i.e., local usage, non-large stack-size, |stack| ≤ 2^16)
 .eqv DATA_SIZE 16
+.eqv REG_Z 0
+.eqv REG_AT 1
+.eqv REG_V0 2
+.eqv REG_V1 3
+.eqv REG_A0 4
+.eqv REG_A1 5
+.eqv REG_A2 6
+.eqv REG_A3 7
+.eqv REG_T0 8
+.eqv REG_T1 9
+.eqv REG_T2 10
+.eqv REG_T3 11
+.eqv REG_T4 12
+.eqv REG_T5 13
+.eqv REG_T6 14
+.eqv REG_T7 15
+.eqv REG_S0 16
+.eqv REG_S1 17
+.eqv REG_S2 18
+.eqv REG_S3 19
+.eqv REG_S4 20
+.eqv REG_S5 21
+.eqv REG_S6 22
+.eqv REG_S7 23
+.eqv REG_T8 24
+.eqv REG_T9 25
+.eqv REG_K0 26
+.eqv REG_K1 27
+.eqv REG_GP 28
 .eqv REG_SP 29
+.eqv REG_FP 30
 .eqv REG_RA 31
 
 .data

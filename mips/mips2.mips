@@ -40,6 +40,36 @@ interpreter:
 
         opcode $s0 $s1
         case $s1 0 DO_R
+
+        # peel out pieces
+        # $t0 = sign_ext_imm
+        # $t1 = zero_ext_imm
+        # $t2 = rs number
+        # $t3 = rt number
+        # $t4 = rf(rs)
+        # $t5 = rf(rt)
+        # $t6,7,8 free
+        # $t9 = pc+4
+        sign_ext_imm $s0 $t0
+        zero_ext_imm $s0 $t1
+        rs $s0 $t2
+        rt $s0 $t3
+        l_reg $t2 $t4
+        l_reg $t3 $t5
+        # reload these (modified in l_reg)
+        rs $s0 $t2
+        rt $s0 $t3
+        l_pc $t9
+        addi $t9 $t9 4
+
+        .macro go_bt
+            bt $s0 $t6
+            s_pc $t6
+        .end_macro
+        .macro no_bt
+            s_pc $t9
+        .end_macro
+
         case $s1 OP_LW DO_LW
         case $s1 OP_SW DO_SW
         case $s1 OP_ADDI DO_ADDI
@@ -57,166 +87,131 @@ interpreter:
         case op_default
 
         DO_LW: # {{{
-            sign_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_data $t0 $t1 $t2
-            rt $s0 $t0
-            s_reg $t0 $t2
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # l_data sign_ext_imm rs $t6
+            l_data $t0 $t2 $t6
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_SW: # {{{
-            sign_ext_imm $s0 $t0
-            rs $s0 $t1
-            rt $s0 $t2
-            l_reg $t2 $t2
-            s_data $t0 $t1 $t2
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # s_data sign_ext_imm rs rf(rt)
+            s_data $t0 $t2 $t5
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_ADDI: # {{{
-            sign_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_reg $t1 $t1
-            add $t0 $t0 $t1
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # add $t6 sign_ext_imm rf(rs)
+            add $t6 $t0 $t4
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_ADDIU: # {{{
-            sign_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_reg $t1 $t1
-            addu $t0 $t0 $t1
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # addu $t6 sign_ext_imm rf(rs)
+            addu $t6 $t0 $t4
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_SLTI: # {{{
-            sign_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_reg $t1 $t1
-            slt $t0 $t1 $t0
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # slt $t6 rf(rs) sign_ext_imm
+            slt $t6 $t4 $t0
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_SLTIU: # {{{
-            sign_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_reg $t1 $t1
-            sltu $t0 $t1 $t0
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # sltu $t6 rf(rs) sign_ext_imm
+            sltu $t6 $t4 $t0
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_ORI: # {{{
-            zero_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_reg $t1 $t1
-            or $t0 $t0 $t1
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # or $t6 zero_ext_imm rf(rs)
+            or $t6 $t1 $t4
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_LUI: # {{{
-            zero_ext_imm $s0 $t0
-            sll $t0 $t0 16
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # sll $t6 zero_ext_imm 16
+            sll $t6 $t1 16
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_ANDI: # {{{
-            zero_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_reg $t1 $t1
-            and $t0 $t0 $t1
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # and $t6 zero_ext_imm rf(rs)
+            and $t6 $t1 $t4
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_XORI: # {{{
-            zero_ext_imm $s0 $t0
-            rs $s0 $t1
-            l_reg $t1 $t1
-            xor $t0 $t0 $t1
-            rt $s0 $t1
-            s_reg $t1 $t0
-
-            l_pc $t0
-            addi $t0 $t0 4
-            s_pc $t0
+            # xor $t6 zero_ext_imm rf(rs)
+            xor $t6 $t1 $t4
+            # s_reg rt $t6
+            s_reg $t3 $t6
+            # s_pc pc+4
+            s_pc $t9
             case_break op_end # }}}
         DO_BEQ: # {{{
-            rs $s0 $t0
-            l_reg $t0 $t0
-            rt $s0 $t1
-            l_reg $t1 $t1
-            .macro beq_true
-                bt $s0 $t2
-                s_pc $t2
-            .end_macro
-            .macro beq_false
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
-            .end_macro
-            if beq $t0 $t1 beq_true beq_false
+            # if beq rf(rs) rf(rt) go_bt no_bt
+            if beq $t4 $t5 go_bt no_bt
             case_break op_end # }}}
         DO_BNE: # {{{
-            rs $s0 $t0
-            l_reg $t0 $t0
-            rt $s0 $t1
-            l_reg $t1 $t1
-            .macro bne_true
-                bt $s0 $t2
-                s_pc $t2
-            .end_macro
-            .macro bne_false
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
-            .end_macro
-            if bne $t0 $t1 bne_true bne_false
+            # if bne rf(rs) rf(rt) go_bt no_bt
+            if bne $t4 $t5 go_bt no_bt
             case_break op_end # }}}
         DO_J: # {{{
-            l_pc $t0
-            j_addr $s0 $t0 $t1
-            s_pc $t1
+            # pc+4-4
+            subi $t6 $t9 4
+            # j_addr $s0 pc $t7
+            j_addr $s0 $t6 $t7
+            # s_pc $t7
+            s_pc $t7
             case_break op_end # }}}
         DO_JAL: # {{{
-            l_pc $t0
-            addi $t0 $t0 4
-            li $t1 REG_RA
-            s_reg $t1 $t0
+            li $t6 REG_RA
+            # s_reg 31 pc+4
+            s_reg $t6 $t9
             j DO_J # }}}
 
         DO_R: # {{{
+            # peel out pieces
+            # $t0 = rd number
+            # $t1 = rf(rd)
+            # $t2 = rs number
+            # $t3 = rt number
+            # $t4 = rf(rs)
+            # $t5 = rf(rt)
+            # $t6 = shamt
+            # $t7,8 free
+            # $t9 = pc+4
+            rd $s0 $t0
+            l_reg $t0 $t1
+            # reload
+            rd $s0 $t0
+            rs $s0 $t2
+            rt $s0 $t3
+            l_reg $t2 $t4
+            l_reg $t3 $t5
+            # reload
+            rs $s0 $t2
+            rt $s0 $t3
+            shamt $s0 $t6
+            l_pc $t9
+            addi $t9 $t9 4
+
             funct $s0 $s1
             case $s1 FUNC_ADD DO_ADD
             case $s1 FUNC_ADDU DO_ADDU
@@ -238,208 +233,135 @@ interpreter:
             case r_default
 
             DO_ADD: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                add $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # add $t7 rf(rs) rf(rt)
+                add $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_ADDU: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                addu $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # addu $t7 rf(rs) rf(rt)
+                addu $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SUB: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                sub $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # sub $t7 rf(rs) rf(rt)
+                sub $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_AND: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                and $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # and $t7 rf(rs) rf(rt)
+                and $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_OR: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                or $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # or $t7 rf(rs) rf(rt)
+                or $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_XOR: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                xor $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # xor $t7 rf(rs) rf(rt)
+                xor $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_NOR: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                nor $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # nor $t7 rf(rs) rf(rt)
+                nor $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SLT: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                slt $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # slt $t7 rf(rs) rf(rt)
+                slt $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SLTU: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                sltu $t0 $t0 $t1
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # sltu $t7 rf(rs) rf(rt)
+                sltu $t7 $t4 $t5
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SLL: # {{{
-                shamt $s0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
                 # sllv because we don't know the shamt ($t0)
-                sllv $t0 $t1 $t0
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # sllv $t7 rf(rt) shamt
+                sllv $t7 $t5 $t6
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SLLV: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                sllv $t0 $t1 $t0
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # sllv $t7 rf(rt) rf(rs)
+                sllv $t7 $t5 $t4
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SRL: # {{{
-                shamt $s0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                srlv $t0 $t1 $t0
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # srlv $t7 rf(rt) shamt
+                srlv $t7 $t5 $t6
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SRLV: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                srlv $t0 $t1 $t0
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # srlv $t7 rf(rt) rf(rs)
+                srlv $t7 $t5 $t4
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SRA: # {{{
-                shamt $s0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                srav $t0 $t1 $t0
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # srav $t7 rf(rt) shamt
+                srav $t7 $t5 $t6
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_SRAV: # {{{
-                rs $s0 $t0
-                l_reg $t0 $t0
-                rt $s0 $t1
-                l_reg $t1 $t1
-                srav $t0 $t1 $t0
-                rd $s0 $t1
-                s_reg $t1 $t0
-
-                l_pc $t0
-                addi $t0 $t0 4
-                s_pc $t0
+                # srav $t7 rf(rt) rf(rs)
+                srav $t7 $t5 $t4
+                # s_reg rd $t7
+                s_reg $t0 $t7
+                # s_pc pc+4
+                s_pc $t9
                 case_break r_end # }}}
             DO_JR: # {{{
-                jt $s0 $t0
-                s_pc $t0
+                jt $s0 $t7
+                s_pc $t7
                 case_break r_end # }}}
             DO_JALR: # {{{
                 # store PC + 4 in $ra
-                l_pc $t0
-                addi $t0 $t0 4
-                li $t1 REG_RA
-                s_reg $t1 $t0
+                li $t7 REG_RA
+                # s_reg 31 pc+4
+                s_reg $t7 $t9
                 j DO_JR # }}}
 
             r_default:

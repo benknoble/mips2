@@ -39,6 +39,7 @@ interpreter:
         beq $s0 $0 halt
 
         opcode $s0 $s1
+        case $s1 0 DO_R
         case $s1 OP_LW DO_LW
         case $s1 OP_SW DO_SW
         case $s1 OP_ADDI DO_ADDI
@@ -53,7 +54,6 @@ interpreter:
         case $s1 OP_BNE DO_BNE
         case $s1 OP_J DO_J
         case $s1 OP_JAL DO_JAL
-        case $s1 0 DO_R
         case op_default
 
         DO_LW: # {{{

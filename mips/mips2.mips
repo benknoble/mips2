@@ -377,6 +377,9 @@ interpreter:
     halt:
     jr $ra
 
+# .include "procs_board.mips"
+.include "procs_mars.mips"
+
 error:
     # 0x00000000, also my halt code, easy to distinguish
     sll $0 $0 0

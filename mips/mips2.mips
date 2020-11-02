@@ -20,13 +20,53 @@
 .include "bubble-sort.hex" # bubblesort
 # # …
 
+.eqv K_0 1
+.eqv K_1 2
+.eqv K_2 3
+.eqv K_3 4
+.eqv K_4 5
+.eqv K_5 6
+
+.eqv K_SPC 1
+.eqv K_K 2
+
 # main program
 .text
 menu:
-    # hardcoding examples for now
-    la $t0 bubblesort
-    sw $t0 progbase
-    jal interpreter
+    # wait until key pressed
+    menu_key_loop: jal get_key
+                   beq $v0 $0 menu_key_loop
+    case $v0 K_0 toggle_mode
+    case $v0 K_1 run_iterfact12
+    case $v0 K_2 run_recfact12
+    case $v0 K_3 run_iterfib47
+    case $v0 K_4 run_recfib12
+    case $v0 K_5 run_bubblesort
+    case key_default
+
+    toggle_mode:
+        j menu
+    run_iterfact12:
+        la $t0 iterfact12
+        case_break key_end
+    run_recfact12:
+        la $t0 recfact12
+        case_break key_end
+    run_iterfib47:
+        la $t0 iterfib47
+        case_break key_end
+    run_recfib12:
+        la $t0 recfib12
+        case_break key_end
+    run_bubblesort:
+        la $t0 bubblesort
+        case_break key_end
+    key_default:
+        j menu
+    key_end:
+        sw $t0 progbase
+        jal interpreter
+    j menu
     # for mars only
     j mars_end
 
@@ -375,7 +415,8 @@ interpreter:
         j interpreter_loop # }}}
 
     halt:
-    jr $ra
+        move $v0 $0
+        jr $ra
 
 # .include "procs_board.mips"
 .include "procs_mars.mips"

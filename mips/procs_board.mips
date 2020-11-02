@@ -142,7 +142,7 @@ getChar_atXY:
 	#####################################
 
 .data
-key_array:	.word	0x1C, 0x23, 0x1D, 0x1B   	# define as many keycodes here as you need
+key_array:	.word	0x45, 0x16, 0x1E, 0x26, 0x25, 0x2E
 key_array_end:	    # marks end of key array, so number of keys can be calculated
 
 .eqv keyb_mmio 0x10030000 		# from our memory map
@@ -194,7 +194,7 @@ get_key_exit:
 	#####################################
 
 .data
-key_array2:	.word	0x6B, 0x74, 0x75, 0x72   	# define as many keycodes here as you need
+key_array2:	.word	0x29, 0x42
 key_array_end2:     # marks end of key array, so number of keys can be calculated
 
 ## The keys defined above are the four arrows on the "numpad" part of the keyboard

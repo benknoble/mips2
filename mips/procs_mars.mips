@@ -166,7 +166,7 @@ getChar_atXY:
 	#####################################
 
 .data
-key_array:	.word	'a', 'd', 'w', 's'
+key_array:	.word	'0', '1', '2', '3', '4', '5'
 key_array_end:
 
 .eqv keyb_ctl 0xFFFF0000 		# Control register in MARS for MMIO display tool
@@ -219,7 +219,7 @@ get_key_exit:
 	#####################################
 
 .data
-key_array2:	.word	'j', 'l', 'i', 'k'
+key_array2:	.word	' ', 'k'
 key_array_end2:     # marks end of key array, so number of keys can be calculated
 
 .text

@@ -94,6 +94,8 @@ interpreter:
     reset_mem
     interpreter_loop: # {{{
         l_instr $s0
+        move $a0 $s0
+        jal put_sound # will be 0 when ending
         # halt when instruction is 0x00000000
         beq $s0 $0 halt
 

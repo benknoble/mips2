@@ -20,6 +20,9 @@
 .include "bubble-sort.hex" # bubblesort
 # # …
 
+.data
+mode: .word 0
+
 .eqv K_0 1
 .eqv K_1 2
 .eqv K_2 3
@@ -45,6 +48,9 @@ menu:
     case key_default
 
     toggle_mode:
+        lw $t0 mode
+        not $t0 $t0
+        sw $t0 mode
         j menu
     run_iterfact12:
         la $t0 iterfact12

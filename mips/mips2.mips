@@ -62,7 +62,7 @@ menu:
         la $t0 bubblesort
         case_break key_end
     key_default:
-        j menu
+        j error
     key_end:
         sw $t0 progbase
         jal interpreter

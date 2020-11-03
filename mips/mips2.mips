@@ -77,8 +77,19 @@ menu:
     j mars_end
 
 interpreter:
-    subi $sp $sp 4
-    sw $ra 0($sp)
+    subi $sp $sp 8
+    # BADWRONG! WRONGBAD! Save stuff like this on the stack! But…
+    # the interpreter is "stackless" precisely becuase we can't control the
+    # interpreted program's use of the stack… So we can't even *restore* from
+    # the stack!
+    #
+    # instead, use some un-used registers for these very important pieces
+    #
+    # double check that there are only two usages:
+    # git grep -o '\$s[[:digit:]]' mips/mips2.mips | cut -d: -f4 | sort | uniq -c
+    move $s5 $ra
+    move $s6 $sp
+    move $s7 $fp
     reset_pc
     reset_mem
     interpreter_loop: # {{{
@@ -433,7 +444,10 @@ interpreter:
 
     halt:
         move $v0 $0
-        lw $ra 0($sp)
+        # cf. BADWRONG! WRONGBAD!
+        move $ra $s5
+        move $sp $s6
+        move $fp $s7
         addi $sp $sp 4
         jr $ra
 

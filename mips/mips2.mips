@@ -445,6 +445,8 @@ interpreter:
                 j interpreter_loop # }}}
 
     halt:
+        # only relevant if we got here through K_K "kill"
+        jal sound_off
         move $v0 $0
         # cf. BADWRONG! WRONGBAD!
         move $ra $s5

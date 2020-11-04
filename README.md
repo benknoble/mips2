@@ -1,4 +1,4 @@
-## MIPS interpreting MIPS
+# MIPS interpreting MIPS
 
 [![This project is considered experimental](https://img.shields.io/badge/status-experimental-critical.svg)](https://benknoble.github.io/status/experimental/)
 
@@ -9,6 +9,33 @@ Takes advantage of memory-mapped IO from hardware to play sounds based on the
 current instruction and to display the current set of registers.
 
 [Design documentation](./DESIGN.md)
+
+## Controls when choosing a program (no sound playing)
+
+- <kbd>0</kbd>: toggle "step mode"
+- <kbd>1</kbd>: compute `12! = 479001600 = 0x1C8CFC00` into `$v0` iteratively
+- <kbd>2</kbd>: compute `12!` into `$v0` recursively
+- <kbd>3</kbd>: compute `Fib(47) = 2971215073 = 0xB11924E1` into `$v0` iteratively
+- <kbd>4</kbd>: compute `Fib(12) = 144 = 0x00000090` into `$v0` recursively
+- <kbd>5</kbd>: sort 10 pre-generated random 32-bit integers in memory using
+  bubblesort, and set `$v0` to `1` if they are sorted after the algorithm runs.
+  Also copies the integers into `$t0` through `$t9` for inspection. The original
+  integers are
+  - 0xc69020dc
+  - 0xc3848f98
+  - 0x40c0016f
+  - 0x55282432
+  - 0x81dfe057
+  - 0x52957459
+  - 0x25c0a1e3
+  - 0x47a7a168
+  - 0xbf60aa02
+  - 0x683dd5b0
+
+## Controls when running a program (sound playing; only in step mode)
+
+- <kbd>Space</kbd>: execute next instruction
+- <kbd>k</kbd>: quit interpreter and go back to menu
 
 ### Building examples into the interpreter
 

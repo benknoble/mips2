@@ -34,7 +34,7 @@ mode: .word 0
 
 # main program
 .text
-menu:
+menu: # {{{
     # wait until key pressed
     menu_key_loop: jal get_key
                    beq $v0 $0 menu_key_loop
@@ -74,8 +74,9 @@ menu:
     j menu
     # for mars only
     j mars_end
+    # }}}
 
-interpreter:
+interpreter: # {{{
     subi $sp $sp 8
     # BADWRONG! WRONGBAD! Save stuff like this on the stack! But…
     # the interpreter is "stackless" precisely becuase we can't control the
@@ -452,7 +453,7 @@ interpreter:
         move $sp $s6
         move $fp $s7
         addi $sp $sp 4
-        jr $ra
+        jr $ra # }}}
 
 # .include "procs_board.mips"
 .include "procs_mars.mips"

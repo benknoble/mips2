@@ -71,10 +71,7 @@ menu: # {{{
     key_end:
         sw $t0 progbase
         jal interpreter
-    j menu
-    # for mars only
-    j mars_end
-    # }}}
+    j menu # }}}
 
 interpreter: # {{{
     subi $sp $sp 8
@@ -606,5 +603,5 @@ screen_udpate_hexits: # {{{
 error:
     # 0x00000000, also my halt code, easy to distinguish
     sll $0 $0 0
-
-mars_end:
+    # stay stuck
+    j error

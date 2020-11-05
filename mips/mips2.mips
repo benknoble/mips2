@@ -8,8 +8,8 @@
 # macros for accessing memory, PC, simulated registers
 .include "mem.mips"
 
-# IO facilities, esp. as macros?
-# .include "io.mips"
+# defines the character codes
+.include "bmem-map.mips"
 
 # assembled programs in labeled .data blocks
 # .include "<sample_mips>.hex"

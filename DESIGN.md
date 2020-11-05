@@ -76,6 +76,8 @@ take too long or require excessive amounts of memory to memoize)
 place, and 0s at all the values (generated automatically by the makefile)
 - a table of character codes based on `init.bmem` is in `bmem-map` (both are
 generated automatically by the makefile)
+- a table of macros `mips/bmem-map.mips` is generated from `bmem-map` by the
+makefile
 
 #### Display design
 

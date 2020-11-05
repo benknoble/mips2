@@ -34,6 +34,7 @@ mode: .word 0
 
 # main program
 .text
+li $sp 0x10011000 # stack start on hardware with 1024 words of data memory
 menu: # {{{
     # wait until key pressed
     menu_key_loop: jal get_key

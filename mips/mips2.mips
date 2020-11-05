@@ -8,17 +8,16 @@
 # macros for accessing memory, PC, simulated registers
 .include "mem.mips"
 
-# # IO facilities, esp. as macros?
+# IO facilities, esp. as macros?
 # .include "io.mips"
 
-# # assembled programs in labeled .data blocks
+# assembled programs in labeled .data blocks
 # .include "<sample_mips>.hex"
 .include "iter-fact-12.hex" # iterfact12
 .include "rec-fact-12.hex" # recfact12
 .include "iter-fib-47.hex" # iterfib47
 .include "rec-fib-12.hex" # recfib12
 .include "bubble-sort.hex" # bubblesort
-# # …
 
 .data
 mode: .word 0

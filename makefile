@@ -30,7 +30,7 @@ mips/bmem-map.mips: bmem-map
 		sub(".*/", "", $$2); \
 		sub("\\..*$$", "", $$2); \
 		gsub("[^[:alnum:]]", "_", $$2); \
-		printf ".eqv %s %d\n", toupper($$2), $$1 \
+		printf ".eqv CHAR_%s %d\n", toupper($$2), $$1 \
 	}' >'$@'
 init.bmem:
 	printf '%s\n' $^ | LC_ALL=C sort | xargs cat > '$@'

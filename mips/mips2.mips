@@ -96,6 +96,54 @@ interpreter: # {{{
         l_instr $s0
         move $a0 $s0
         jal put_sound # will be 0 when ending
+
+        screen_update: # {{{
+        li $t0 0
+        screen_update_reg_loop: # {{{
+            bgei $t0 32 screen_update_reg_loop_end
+
+            # $t1 = rf($t0)
+            move $t1 $t0
+            l_reg $t1 $t1
+            # $t2 = grid column = $t0 mod 2 = $t0 & 1
+            andi $t2 $t0 0x00000001
+            # $t2 = screen column = 1 + (grid column * 28) = 1 + (gc << 4) + (gc << 3) + (gc << 2)
+            # but display is L = 0x DDDD DDDD, so start at first D by adding 3
+            sll $t8 $t2 4
+            sll $t9 $t2 3
+            add $t9 $t9 $t8
+            sll $t8 $t2 2
+            add $t2 $t9 $t8
+            addi $t2 $t2 4
+            # $t3 = screen row = grid row = $t0 div 2 = $t0 >> 1
+            srl $t3 $t0 1
+
+            jal screen_udpate_hexits
+
+            # next register number
+            addi $t0 $t0 1
+            j screen_update_reg_loop
+        screen_update_reg_loop_end: # }}}
+
+        # PC = 0x DDDD DDDD
+        # $t1 = PC
+        l_pc $t1
+        # $t2 = starting column = 4 (first D)
+        li $t2 4
+        # $t3 = next row
+        addi $t3 $t3 1
+        jal screen_udpate_hexits
+
+        # INSTR = 0x DDDD DDDD
+        # $t1 = instr
+        move $t1 $s0
+        # $t2 = starting column = 4 (first D)
+        li $t2 4
+        # $t3 = next row
+        addi $t3 $t3 1
+        jal screen_udpate_hexits
+        # }}}
+
         # halt when instruction is 0x00000000
         beq $s0 $0 halt
 
@@ -454,6 +502,103 @@ interpreter: # {{{
         move $fp $s7
         addi $sp $sp 4
         jr $ra # }}}
+
+# args
+# $t1: value
+# $t2: starting column
+# $t3: row
+################################################################################
+# uses
+# $t4: hexit number (1-8)
+# $t5: mask
+# $t6: shamt
+# $t7: hexit
+screen_udpate_hexits: # {{{
+    # store $ra
+    subi $sp $sp 4
+    sw $ra 0($sp)
+    # $t4 = hexit number = 1 to start
+    li $t4 1
+    # $t5 = mask = 0xF0000000 to start
+    li $t5 0xF0000000
+    # $t6 = shamt = 28 to start
+    li $t6 28
+    screen_update_hexit_loop: # {{{
+        bgti $t4 8 screen_update_hexit_loop_end
+
+        # $t7 = hexit
+        and $t7 $t1 $t5
+        srlv $t7 $t7 $t6
+        # set $a0 to charcode for hexit
+        case $t7 0x0 PUT_0
+        case $t7 0x1 PUT_1
+        case $t7 0x2 PUT_2
+        case $t7 0x3 PUT_3
+        case $t7 0x4 PUT_4
+        case $t7 0x5 PUT_5
+        case $t7 0x6 PUT_6
+        case $t7 0x7 PUT_7
+        case $t7 0x8 PUT_8
+        case $t7 0x9 PUT_9
+        case $t7 0xA PUT_A
+        case $t7 0xB PUT_B
+        case $t7 0xC PUT_C
+        case $t7 0xD PUT_D
+        case $t7 0xE PUT_E
+        case $t7 0xF PUT_F
+        # no default, these are the only valid values
+        PUT_0: li $a0 CHAR_HEX_0
+        case_break PUT_END
+        PUT_1: li $a0 CHAR_HEX_1
+        case_break PUT_END
+        PUT_2: li $a0 CHAR_HEX_2
+        case_break PUT_END
+        PUT_3: li $a0 CHAR_HEX_3
+        case_break PUT_END
+        PUT_4: li $a0 CHAR_HEX_4
+        case_break PUT_END
+        PUT_5: li $a0 CHAR_HEX_5
+        case_break PUT_END
+        PUT_6: li $a0 CHAR_HEX_6
+        case_break PUT_END
+        PUT_7: li $a0 CHAR_HEX_7
+        case_break PUT_END
+        PUT_8: li $a0 CHAR_HEX_8
+        case_break PUT_END
+        PUT_9: li $a0 CHAR_HEX_9
+        case_break PUT_END
+        PUT_A: li $a0 CHAR_HEX_A
+        case_break PUT_END
+        PUT_B: li $a0 CHAR_HEX_B
+        case_break PUT_END
+        PUT_C: li $a0 CHAR_HEX_C
+        case_break PUT_END
+        PUT_D: li $a0 CHAR_HEX_D
+        case_break PUT_END
+        PUT_E: li $a0 CHAR_HEX_E
+        case_break PUT_END
+        PUT_F: li $a0 CHAR_HEX_F
+        case_break PUT_END
+
+        PUT_END:
+        move $a1 $t2
+        move $a2 $t3
+        jal putChar_atXY
+
+        # next screen column
+        addi $t2 $t2 1
+        # next hexit
+        addi $t4 $t4 1
+        # next mask
+        srl $t5 $t5 4
+        # next shamt
+        subi $t6 $t6 4
+        j screen_update_hexit_loop
+    screen_update_hexit_loop_end: # }}}
+    # restore $sp
+    lw $ra 0($sp)
+    addi $sp $sp 4
+    jr $ra # }}}
 
 # .include "procs_board.mips"
 .include "procs_mars.mips"

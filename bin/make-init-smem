@@ -161,7 +161,14 @@ def smem(bmap: Dict[str, int], screen_contents: List[str]) -> List[int]:
 
 
 def main(bmap_fname):
-    print("\n".join(map(str, smem(read_bmap(bmap_fname), screen_contents))))
+    print(
+        "\n".join(
+            map(
+                lambda code: "%x" % code,
+                smem(read_bmap(bmap_fname), screen_contents),
+            )
+        )
+    )
 
 
 if __name__ == "__main__":

@@ -105,14 +105,15 @@ interpreter: # {{{
             l_reg $t1 $t1
             # $t2 = grid column = $t0 mod 2 = $t0 & 1
             andi $t2 $t0 0x00000001
-            # $t2 = screen column = 1 + (grid column * 28) = 1 + (gc << 4) + (gc << 3) + (gc << 2)
+            # $t2 = screen column = 1 + (grid column * 27) = 1 + (gc << 4) + (gc << 3) + (gc << 1) + gc
             # but display is L = 0x DDDD DDDD, so start at first D by adding 3
-            sll $t8 $t2 4
-            sll $t9 $t2 3
-            add $t9 $t9 $t8
-            sll $t8 $t2 2
-            add $t2 $t9 $t8
-            addi $t2 $t2 4
+            sll $t8 $t2 4 # gc << 4
+            sll $t9 $t2 3 # gc << 3
+            add $t9 $t9 $t8 # (gc << 4) + (gc << 3)
+            sll $t8 $t2 1 # gc << 1
+            add $t9 $t9 $t8 # (gc << 4) + (gc << 3) + (gc << 1)
+            add $t2 $t9 $t2 # (gc << 4) + (gc << 3) + (gc << 1) + gc = gc * 27
+            addi $t2 $t2 4 # 1 + (gc * 27) + 4
             # $t3 = screen row = grid row = $t0 div 2 = $t0 >> 1
             srl $t3 $t0 1
 

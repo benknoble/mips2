@@ -86,7 +86,7 @@ makefile
   1 equals, 1 0x (11 total)
 - fit into a grid of 16 rows by 2 columns (L = 0x DDDD DDDD)
   - grid column out of 2 = register-number mod 2 = register-number & 0x00000001
-    - screen columns [1 + (grid column x 28), 11 + (grid column x 28)]
+    - screen columns [1 + (grid column x 27), 11 + (grid column x 27)]
     - screen columns 0, 39, and 12-27 will be blank
   - grid row out of 16 = register-number div 2 = register-number >> 1
     - screen row = grid row

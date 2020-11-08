@@ -37,7 +37,8 @@ mode: .word 0
 li $sp 0x10011000 # stack start on hardware with 1024 words of data memory
 menu: # {{{
     # wait until key pressed
-    menu_key_loop: jal get_key
+    menu_key_loop: li $a0 500
+                   jal pause_and_getkey
                    beq $v0 $0 menu_key_loop
     case $v0 K_0 toggle_mode
     case $v0 K_1 run_iterfact12
@@ -483,10 +484,12 @@ interpreter: # {{{
             lw $t0 mode
             beq $t0 $0 interpreter_continue
             interpreter_key_loop:
-                jal get_key2
-                beq $v0 $0 interpreter_key_loop
-                case $v0 K_SPC interpreter_continue
-                case $v0 K_K halt
+                li $a0 500
+                jal pause_and_getkey_2player
+                # ignore $v0
+                beq $v1 $0 interpreter_key_loop
+                case $v1 K_SPC interpreter_continue
+                case $v1 K_K halt
                 case error # default
             interpreter_continue:
                 j interpreter_loop # }}}

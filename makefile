@@ -22,7 +22,7 @@ JAVA = java
 	} > '$@.tmp'
 	mv '$@.tmp' '$@'
 
-init.bmem bmem-map: bmp/*.bmp
+bmem_init.mem bmem-map: bmp/*.bmp
 bmem-map:
 	printf '%s\n' $^ | LC_ALL=C sort | nl -v0 > '$@'
 mips/bmem-map.mips: bmem-map
@@ -32,9 +32,9 @@ mips/bmem-map.mips: bmem-map
 		gsub("[^[:alnum:]]", "_", $$2); \
 		printf ".eqv CHAR_%s %d\n", toupper($$2), $$1 \
 	}' >'$@'
-init.bmem:
+bmem_init.mem:
 	printf '%s\n' $^ | LC_ALL=C sort | xargs cat > '$@'
-init.smem: bmp/*.bmp bmem-map bin/make-init-smem
+smem_init.mem: bmp/*.bmp bmem-map bin/make-init-smem
 	bin/make-init-smem bmem-map > '$@'
 
 mars:

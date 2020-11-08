@@ -76,7 +76,6 @@ menu: # {{{
     j menu # }}}
 
 interpreter: # {{{
-    subi $sp $sp 8
     # BADWRONG! WRONGBAD! Save stuff like this on the stack! But…
     # the interpreter is "stackless" precisely becuase we can't control the
     # interpreted program's use of the stack… So we can't even *restore* from
@@ -502,7 +501,6 @@ interpreter: # {{{
         move $ra $s5
         move $sp $s6
         move $fp $s7
-        addi $sp $sp 4
         jr $ra # }}}
 
 # args

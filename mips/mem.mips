@@ -42,6 +42,8 @@ progbase: .word 0 # **instruction = *text-address
 # - whenever sw/lw involves 29, forward to actual $sp (assumes correct stack
 #   usage! Large offsets with register $sp may cause problems. So |imm| ≤ 16;
 #   i.e., local usage, non-large stack-size, |stack| ≤ 2^16)
+#   - in fact, the stack starts at 0x10011000, with 1024 words of memory, *some
+#   of which is the data memory!* so |stack| << 1024!
 .eqv DATA_SIZE 16
 .eqv REG_Z 0
 .eqv REG_AT 1
@@ -156,34 +158,38 @@ data: .word 0:DATA_SIZE
     case default
     do_sp:
         add %addr %addr $sp
+        lw %reg 0(%addr)
         case_break end
     do_fp:
         add %addr %addr $fp
+        lw %reg 0(%addr)
         case_break end
     default:
         l_reg %rs %rs
         add %addr %addr %rs
         subi %addr %addr DATA_START
-    end:
         lw %reg data(%addr)
+    end:
 .end_macro
 
 .macro s_data (%addr, %rs, %reg) # %addr, %rs, %reg
     case %rs REG_SP do_sp
-    case %rs REG_FP do_sp
+    case %rs REG_FP do_fp
     case default
     do_sp:
         add %addr %addr $sp
+        sw %reg 0(%addr)
         case_break end
     do_fp:
         add %addr %addr $fp
+        sw %reg 0(%addr)
         case_break end
     default:
         l_reg %rs %rs
         add %addr %addr %rs
         subi %addr %addr DATA_START
-    end:
         sw %reg data(%addr)
+    end:
 .end_macro
 
 # target computations

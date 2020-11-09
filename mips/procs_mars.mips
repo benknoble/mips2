@@ -405,7 +405,7 @@ get_accelY:
 
 .text
 put_sound:
-	addi $sp, $sp, -16
+	addi $sp, $sp, -20
 	sw	$ra, 16($sp)
 	sw	$a0, 12($sp)
 	sw  $a1, 8($sp)
@@ -429,7 +429,7 @@ put_sound:
 	lw	$a1, 8($sp)
 	lw	$a0, 12($sp)
 	lw	$ra, 16($sp)
-	addi $sp, $sp, 16
+	addi $sp, $sp, 20
 	jr	$ra
 
 

@@ -18,9 +18,6 @@ rec_fact:
         # stack {{{
         addi $sp $sp -8
         sw $ra 4($sp)
-        sw $fp 0($sp)
-        addi $fp $sp 4
-        addi $sp $sp -4
         sw $s0 0($sp)
         # }}}
         move $s0 $a0
@@ -30,10 +27,9 @@ rec_fact:
         move $a0 $s0
         jal rec_multiply # result in $v0
         # stack {{{
-        lw $s0 -8($fp)
-        addi $sp $fp 4
-        lw $ra 0($fp)
-        lw $fp -4($fp)
+        lw $s0 0($sp)
+        lw $ra 4($sp)
+        addi $sp $sp 8
         # }}}
         j end_fact
     fact_base_case: li $v0 1
@@ -44,9 +40,6 @@ rec_multiply:
         # stack {{{
         addi $sp $sp -8
         sw $ra 4($sp)
-        sw $fp 0($sp)
-        addi $fp $sp 4
-        addi $sp $sp -4
         sw $s0 0($sp)
         # }}}
         move $s0 $a1
@@ -54,10 +47,9 @@ rec_multiply:
         jal rec_multiply # $v0 = ($a0 - 1) * $a1
         add $v0 $v0 $s0 # add remaining $a1 to make $a0 * $a1
         # stack {{{
-        lw $s0 -8($fp)
-        addi $sp $fp 4
-        lw $ra 0($fp)
-        lw $fp -4($fp)
+        lw $s0 0($sp)
+        lw $ra 4($sp)
+        addi $sp $sp 8
         # }}}
         j end_multiply
     mult_base_case: move $v0 $0

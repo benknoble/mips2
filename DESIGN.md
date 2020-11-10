@@ -55,6 +55,11 @@
 
 - must assume data is 0-initialized (i.e., you fill your own data) and limited
   to `DATA_SIZE` words
+- must **not** use `$sp` to restore `$fp` or vice-versa: once the stack-pointer
+  moves, anything underneath it can (and will) be overwritten; once the
+  frame-pointer moves, you can't use it to restore the stack
+  - alternatives are to not use `$fp` (cf. `rec-fact-12`) or to restore `$sp` by
+    adding to it directly (cf. `rec-fib-12`)
 - put the "answer" in `$v0`
 
 Provided:

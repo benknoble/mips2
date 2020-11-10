@@ -32,12 +32,14 @@ mode: .word 0
 .eqv K_SPC 1
 .eqv K_K 2
 
+.eqv PAUSE 500
+
 # main program
 .text
 li $sp 0x10011000 # stack start on hardware with 1024 words of data memory
 menu: # {{{
     # wait until key pressed
-    menu_key_loop: li $a0 500
+    menu_key_loop: li $a0 PAUSE
                    jal pause_and_getkey
                    beq $v0 $0 menu_key_loop
     case $v0 K_0 toggle_mode
@@ -483,7 +485,7 @@ interpreter: # {{{
             lw $t0 mode
             beq $t0 $0 interpreter_continue
             interpreter_key_loop:
-                li $a0 500
+                li $a0 PAUSE
                 jal pause_and_getkey_2player
                 # ignore $v0
                 beq $v1 $0 interpreter_key_loop
@@ -600,8 +602,8 @@ screen_udpate_hexits: # {{{
     addi $sp $sp 4
     jr $ra # }}}
 
-.include "procs_board.mips"
-# .include "procs_mars.mips"
+# .include "procs_board.mips"
+.include "procs_mars.mips"
 
 error:
     # 0x00000000, also my halt code, easy to distinguish

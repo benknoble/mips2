@@ -32,7 +32,7 @@ mode: .word 0
 .eqv K_SPC 1
 .eqv K_K 2
 
-.eqv PAUSE 500
+.eqv PAUSE 100
 
 # main program
 .text

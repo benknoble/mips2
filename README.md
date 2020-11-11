@@ -10,6 +10,11 @@ current instruction and to display the current set of registers.
 
 [Design documentation](./DESIGN.md)
 
+### Demos (YouTube)
+
+- [almost complete demo](https://www.youtube.com/watch?v=HqFFAOen22g)
+- [Fib(12) recursively demo](https://www.youtube.com/watch?v=WRYfnbXZhao)
+
 ## Controls when choosing a program (no sound playing)
 
 - <kbd>0</kbd>: toggle "step mode"
